@@ -97,7 +97,7 @@ public class TorchPlacerQueue {
             BlockPos position = positions.next();
 
             // Check light level before placing torch
-            if (world.getLightLevel(LightType.BLOCK, position) <= 7 && canPlaceTorch(world, position)) {
+            if (world.getLightLevel(LightType.BLOCK, position) <= 7) {
                 world.setBlockState(position, TORCH.getDefaultState(), Block.NOTIFY_ALL);
 
                 spawnParticleLine(
