@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "group": "misc",
+    "category": "misc",
+    "pattern": [
+        "BBB",
+        "BTB",
+        "BBB"
+    ],
+    "key": {
+        "B": [
+            "minecraft:coal_block"
+        ],
+        "T": [
+            "minecraft:torch"
+        ]
+    },
+    "result": {
+        "id": "lumenorb:lumen_orb",
+        "count": 1
+    }
+}
