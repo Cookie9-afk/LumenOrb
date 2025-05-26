@@ -5,11 +5,16 @@ import lumenorbmod.utils.TorchPlacerQueue;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 import static lumenorbmod.utils.TorchPlacerQueue.hasDurability;
 import static lumenorbmod.utils.TorchPlacerQueue.validate;
@@ -40,5 +45,10 @@ public class LumenOrbItem extends Item {
         world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 0.3F, 1.0F);
         TorchPlacerQueue.add(new PlacementJob(world, user, usedItem, validate(user.getBlockPos())));
         return ActionResult.SUCCESS;
+    }
+
+    @Override
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        tooltip.add(Text.translatable("itemTooltip.lumenorbmod.lumen_orb").formatted(Formatting.GOLD));
     }
 }
