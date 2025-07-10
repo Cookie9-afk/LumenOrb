@@ -1,11 +1,15 @@
 package lumenorbmod.item;
 
+import lumenorbmod.screenhandler.LumenOrbScreenHandler;
 import lumenorbmod.utils.PlacementJob;
 import lumenorbmod.utils.TorchPlacerQueue;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -27,6 +31,28 @@ public class LumenOrbItem extends Item {
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack usedItem = user.getStackInHand(hand);
+
+        if(user.isSneaking()){
+            if (!world.isClient) {
+                // Open your screen handler for the player on the server side
+                NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
+                    @Override
+                    public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+                        // Pass the syncId, player inventory, and your own inventory (or a new SimpleInventory)
+                        return new LumenOrbScreenHandler(syncId, playerInventory);
+                    }
+
+                    @Override
+                    public Text getDisplayName() {
+                        // This is the title of the GUI window
+                        return Text.literal("Lumen Orb Inventory");
+                    }
+                };
+
+                user.openHandledScreen(screenHandlerFactory);
+            }
+            return ActionResult.SUCCESS;
+        }
 
         if (!hasDurability(usedItem)) return useFail(world, user);
         else if (world.isClient)  return ActionResult.SUCCESS;
