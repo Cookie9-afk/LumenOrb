@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
+
 public class LumenOrbScreenHandler extends ScreenHandler {
     private final Inventory inventory;
 
@@ -25,6 +26,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         super(LumenOrb.LUMEN_ORB_SCREEN_HANDLER, syncId);
         checkSize(inventory, 9);
         this.inventory = inventory;
+
         // some inventories do custom logic when a player opens it.
         inventory.onOpen(playerInventory.player);
 
@@ -35,7 +37,17 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         // Our inventory
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 3; ++l) {
-                this.addSlot(new Slot(inventory, l + m * 3, 62 + l * 18, 17 + m * 18));
+                int index = l + m * 3;
+                int x = 62 + l * 18;
+                int y = 17 + m * 18;
+
+                this.addSlot(new Slot(inventory, index, x, y) {
+                    @Override
+                    public boolean canInsert(ItemStack stack) {
+                        // Only allow items that have a burn time (i.e. are fuel)
+                        return LumenOrb.getFuelRegistry().isFuel(stack);
+                    }
+                });
             }
         }
         // The player inventory
@@ -61,7 +73,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
     public ItemStack quickMove(PlayerEntity player, int invSlot) {
         ItemStack newStack = ItemStack.EMPTY;
         Slot slot = this.slots.get(invSlot);
-        if (slot != null && slot.hasStack()) {
+        if (slot.hasStack()) {
             ItemStack originalStack = slot.getStack();
             newStack = originalStack.copy();
             if (invSlot < this.inventory.size()) {
