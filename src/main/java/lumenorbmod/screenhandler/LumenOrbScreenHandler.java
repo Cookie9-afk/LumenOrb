@@ -1,14 +1,13 @@
 package lumenorbmod.screenhandler;
 
 import lumenorbmod.LumenOrb;
+import lumenorbmod.utils.InventoryManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
-
 
 public class LumenOrbScreenHandler extends ScreenHandler {
     private final Inventory inventory;
@@ -17,13 +16,14 @@ public class LumenOrbScreenHandler extends ScreenHandler {
     // The client will call the other constructor with an empty Inventory and the screenHandler will automatically
     // sync this empty inventory with the inventory on the server.
     public LumenOrbScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, new SimpleInventory(9));
+        this(syncId, playerInventory, new InventoryManager());
     }
 
-    // This constructor gets called from the BlockEntity on the server without calling the other constructor first, the server knows the inventory of the container
+    // This constructor gets called from the item on the server without calling the other constructor first, the server knows the inventory of the container
     // and can therefore directly provide it as an argument. This inventory will then be synced to the client.
-    public LumenOrbScreenHandler(int syncId, PlayerInventory playerInventory, Inventory inventory) {
+    public LumenOrbScreenHandler(int syncId, PlayerInventory playerInventory, InventoryManager inventory) {
         super(LumenOrb.LUMEN_ORB_SCREEN_HANDLER, syncId);
+
         checkSize(inventory, 9);
         this.inventory = inventory;
 
@@ -92,5 +92,15 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         }
 
         return newStack;
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
+
+        if (inventory instanceof InventoryManager manager) {
+            manager.onClose(player);
+        }
+
     }
 }

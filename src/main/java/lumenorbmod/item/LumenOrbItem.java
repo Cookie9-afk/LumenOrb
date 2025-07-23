@@ -30,7 +30,7 @@ public class LumenOrbItem extends Item {
 
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack usedItem = user.getStackInHand(hand);
+        ItemStack orb = user.getStackInHand(hand);
 
         if(user.isSneaking()){
             if (!world.isClient) {
@@ -38,7 +38,6 @@ public class LumenOrbItem extends Item {
                 NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
                     @Override
                     public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-                        // Pass the syncId, player inventory, and your own inventory (or a new SimpleInventory)
                         return new LumenOrbScreenHandler(syncId, playerInventory);
                     }
 
@@ -54,10 +53,10 @@ public class LumenOrbItem extends Item {
             return ActionResult.SUCCESS;
         }
 
-        if (!hasDurability(usedItem)) return useFail(world, user);
+        if (!hasDurability(orb)) return useFail(world, user);
         else if (world.isClient)  return ActionResult.SUCCESS;
 
-        return useSuccess(world, user, usedItem);
+        return useSuccess(world, user, orb);
     }
 
     // Denies the usage

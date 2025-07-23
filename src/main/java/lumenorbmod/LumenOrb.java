@@ -2,6 +2,7 @@ package lumenorbmod;
 
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.screenhandler.LumenOrbScreenHandler;
+import lumenorbmod.utils.components.LumenOrbComponents;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -35,7 +36,12 @@ public class LumenOrb implements ModInitializer {
 
 		LOGGER.info("initializing lumenorb...");
 		try{
+			// The mod item
 			LumenOrbItemRegister.initialize();
+
+			// The inventory component
+			LumenOrbComponents.initialize();
+
 			System.out.println("initializing fuelRegistry...");
 			// When game starts I capture a reference to the fuelRegistry and store it for later use
 			ServerLifecycleEvents.SERVER_STARTED.register(this::initFuelRegistry);
