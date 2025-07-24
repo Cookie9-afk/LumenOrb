@@ -3,6 +3,7 @@ package lumenorbmod.utils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleEffect;
@@ -124,7 +125,7 @@ public class TorchPlacerQueue {
         BlockState belowState = world.getBlockState(below);
         BlockState targetState = world.getBlockState(position);
 
-        if (!targetState.isAir() || !targetState.getFluidState().isEmpty()) return false;
+        if ((!targetState.isAir() && !targetState.isOf(Blocks.SNOW)) || !targetState.getFluidState().isEmpty()) return false;
 
         return belowState.isSideSolidFullSquare(world, below, Direction.UP);
     }
