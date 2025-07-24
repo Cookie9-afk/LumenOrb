@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 public class LumenOrb implements ModInitializer {
 	public static final String MOD_ID = "lumenorb";
 	// I use this instance for the isFuel method
-	private static FuelRegistry fuelRegistry;
+	private static FuelRegistry FUEL_REGISTRY;
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -55,11 +55,11 @@ public class LumenOrb implements ModInitializer {
 		RegistryWrapper.WrapperLookup registries = server.getRegistryManager();
 		FeatureSet featureSet = server.getSaveProperties().getEnabledFeatures();
 
-		fuelRegistry = FuelRegistry.createDefault(registries, featureSet);
+		FUEL_REGISTRY = FuelRegistry.createDefault(registries, featureSet);
 		LOGGER.info("FuelRegistry initialized");
 	}
 
 	public static FuelRegistry getFuelRegistry(){
-		return fuelRegistry;
+		return FUEL_REGISTRY;
 	}
 }
