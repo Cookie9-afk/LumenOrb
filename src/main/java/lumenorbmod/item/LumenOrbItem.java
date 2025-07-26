@@ -31,68 +31,26 @@ public class LumenOrbItem extends Item {
         super(settings);
     }
 
+    // Normal use, places the torches
+    // Sneaking plus use, opens the orb's inventory
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack orb = user.getStackInHand(hand);
 
-        if(user.isSneaking()){
-            if (!world.isClient) {
-                // Open your screen handler for the player on the server side
-                NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
-                    @Override
-                    public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
-                        return new LumenOrbScreenHandler(syncId, playerInventory);
-                    }
+        // When opening the inventory the use methods stops early
+        if(user.isSneaking()) return openInventory(world, user);
 
-                    @Override
-                    public Text getDisplayName() {
-                        // This is the title of the GUI window
-                        return Text.literal("Lumen Orb Inventory");
-                    }
-                };
+        // if the item has less than 3\4 durability this will try to repair it, max is 288 durability, 1\4 * 288 = 72
+        if(orb.getDamage() > 72) repair(orb);
 
-                user.openHandledScreen(screenHandlerFactory);
-            }
-            return ActionResult.SUCCESS;
-        }
-
-        // while the item has less than 3\4 durability this will try to repair it, max is 288 durability, 1\4 * 288 = 72
-        if(orb.getDamage() > 72){
-            DefaultedList<ItemStack> items = orb.get(LumenOrbComponents.INVENTORY);
-            while(orb.getDamage() > 72){
-                // no fuel in the inventory? exit early
-                if (items.size() == 0) break;
-
-                // if we arrived here this means there's fuel in the inventory then we get the first ItemStack
-                ItemStack fuel = items.getFirst();
-
-                // rounding to allow items with 200+ burn time to be useful, planks for example
-                int repairAmount = Math.round(LumenOrb.getFuelRegistry().getFuelTicks(fuel) / 400F);
-
-                // once we get the amount we have to repair I call the repair method and decrement the ItemStack for the fuel
-                repair(orb, repairAmount);
-                items.getFirst().decrement(1);
-
-
-                // Since decrementing the ItemStack can reduce the item to 0 amount then you would get air in the slot
-                // instead I first clean the inventory then pass it back
-
-                // After the job is done I update the orb inventory without the consumed item
-                DefaultedList<ItemStack> sanitizedList = DefaultedList.copyOf(
-                        ItemStack.EMPTY,
-                        items.stream()
-                                .filter(stack -> !stack.isEmpty())
-                                .toArray(ItemStack[]::new)
-                );
-
-                items = sanitizedList;
-                orb.set(LumenOrbComponents.INVENTORY, sanitizedList);
-            }
-        }
-
+        // if the item has no durability to be used it just fails to be used
         if (!hasDurability(orb)) return useFail(world, user);
+
+        // here I close for the client early because I want to do other stuff from server only
+        // like managing the torch placing order, particle spawn etc
         else if (world.isClient)  return ActionResult.SUCCESS;
 
+        // start of server managed stuff
         return useSuccess(world, user, orb);
     }
 
@@ -114,8 +72,59 @@ public class LumenOrbItem extends Item {
         tooltip.add(Text.translatable("itemTooltip.lumenorbmod.lumen_orb").formatted(Formatting.GOLD));
     }
 
-    public void repair(ItemStack stack, int amount) {
-        int currentDamage = stack.getDamage();
-        stack.setDamage(currentDamage - amount);
+    private void repair(ItemStack orb) {
+        // the fuel inventory
+        DefaultedList<ItemStack> items = orb.get(LumenOrbComponents.INVENTORY);
+
+        // I'm sure I can call it at least once because if we entered the method with the same condition we'll repeat it
+        do{
+            // no fuel in the inventory? exit early
+            if (items.size() == 0) break;
+
+            // if we arrived here this means there's fuel in the inventory then we get the first ItemStack
+            ItemStack fuel = items.getFirst();
+
+            // rounding so items with 200+ burn time can be used for fuel, planks for example
+            int repairAmount = Math.round(LumenOrb.getFuelRegistry().getFuelTicks(fuel) / 400F);
+
+            // once we get the amount we have to repair I repair and decrement the ItemStack for the fuel
+            orb.setDamage(orb.getDamage() - repairAmount);
+            items.getFirst().decrement(1);
+
+            // Since decrementing the ItemStack can reduce the item to 0 amount then you would get air in the slot
+            // instead I first clean the inventory then pass it back
+
+            // After the job is done I update the orb inventory without the consumed item
+            DefaultedList<ItemStack> sanitizedList = DefaultedList.copyOf(
+                    ItemStack.EMPTY,
+                    items.stream()
+                            .filter(stack -> !stack.isEmpty())
+                            .toArray(ItemStack[]::new)
+            );
+
+            items = sanitizedList;
+            orb.set(LumenOrbComponents.INVENTORY, sanitizedList);
+        } while(orb.getDamage() > 72);
+    }
+
+    private ActionResult.Success openInventory(World world, PlayerEntity user){
+        if (!world.isClient) {
+            // Open your screen handler for the player on the server side
+            NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
+                @Override
+                public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
+                    return new LumenOrbScreenHandler(syncId, playerInventory);
+                }
+
+                @Override
+                public Text getDisplayName() {
+                    // This is the title of the GUI window
+                    return Text.literal("Lumen Orb Inventory");
+                }
+            };
+
+            user.openHandledScreen(screenHandlerFactory);
+        }
+        return ActionResult.SUCCESS;
     }
 }
