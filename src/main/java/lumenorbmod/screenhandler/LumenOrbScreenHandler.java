@@ -27,14 +27,16 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         checkSize(inventory, 9);
         this.inventory = inventory;
 
-        // some inventories do custom logic when a player opens it.
+        // I do some stuff when opening the inventory
         inventory.onOpen(playerInventory.player);
 
-        // This will place the slot in the correct locations for a 3x3 Grid. The slots exist on both server and client!
-        // This will not render the background of the slots however, this is the Screens job
+        // I do this to lock the player from moving the orb or that would cause a wrong managing of the orb's inventory
+        int selectedHotbarSlot = playerInventory.selectedSlot; // player's current main hand slot
+
+        // 3x3 Grid
         int m;
         int l;
-        // Our inventory
+
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 3; ++l) {
                 int index = l + m * 3;
@@ -50,6 +52,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
                 });
             }
         }
+
         // The player inventory
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 9; ++l) {
@@ -58,7 +61,22 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         }
         // The player Hotbar
         for (m = 0; m < 9; ++m) {
-            this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
+
+            // this makes the player unable to modify the ItemStack where the orb is located
+            if (m != selectedHotbarSlot) this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
+            else {
+                this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142) {
+                    @Override
+                    public boolean canInsert(ItemStack stack) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean canTakeItems(PlayerEntity playerEntity) {
+                        return false;
+                    }
+                });
+            }
         }
 
     }
