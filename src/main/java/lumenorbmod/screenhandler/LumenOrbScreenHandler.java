@@ -2,6 +2,7 @@ package lumenorbmod.screenhandler;
 
 import lumenorbmod.LumenOrb;
 import lumenorbmod.utils.InventoryManager;
+import lumenorbmod.utils.MyFuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -47,7 +48,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
                     @Override
                     public boolean canInsert(ItemStack stack) {
                         // Only allow items that have a burn time (i.e. are fuel)
-                        return LumenOrb.getFuelRegistry().isFuel(stack);
+                        return MyFuelRegistry.getFuelRegistry().isFuel(stack);
                     }
                 });
             }

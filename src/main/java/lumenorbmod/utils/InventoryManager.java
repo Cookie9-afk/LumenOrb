@@ -41,8 +41,20 @@ public final class InventoryManager extends SimpleInventory {
                         .toArray(ItemStack[]::new)
         );
 
-
         // Adds a component to the item with the inventory parsed as string
         orb.set(LumenOrbComponents.INVENTORY, sanitizedList);
     }
+
+    public static void incrementCharges(ItemStack orb){
+        int charges = orb.getOrDefault(LumenOrbComponents.TORCH_CHARGES, 0);
+
+        orb.set(LumenOrbComponents.TORCH_CHARGES, ++charges);
+    }
+
+    public static void decrementCharges(ItemStack orb){
+        int charges = orb.getOrDefault(LumenOrbComponents.TORCH_CHARGES, 0);
+
+        if(charges > 0) orb.set(LumenOrbComponents.TORCH_CHARGES, --charges);
+    }
+
 }

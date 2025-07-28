@@ -2,17 +2,14 @@ package lumenorbmod;
 
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.screenhandler.LumenOrbScreenHandler;
+import lumenorbmod.utils.MyFuelRegistry;
 import lumenorbmod.utils.components.LumenOrbComponents;
 import net.fabricmc.api.ModInitializer;
-
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.item.FuelRegistry;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.featuretoggle.FeatureSet;
 import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +17,6 @@ import org.slf4j.LoggerFactory;
 public class LumenOrb implements ModInitializer {
 	public static final String MOD_ID = "lumenorb";
 	// I use this instance for the isFuel method
-	private static FuelRegistry FUEL_REGISTRY;
 
 	// This logger is used to write text to the console and the log file.
 	// It is considered best practice to use your mod id as the logger's name.
@@ -42,24 +38,12 @@ public class LumenOrb implements ModInitializer {
 			// The inventory component
 			LumenOrbComponents.initialize();
 
-			System.out.println("initializing fuelRegistry...");
 			// When game starts I capture a reference to the fuelRegistry and store it for later use
-			ServerLifecycleEvents.SERVER_STARTED.register(this::initFuelRegistry);
+			ServerLifecycleEvents.SERVER_STARTED.register(MyFuelRegistry::initialize);
+
+
 		}catch (Exception e){
-			System.out.println("Failed to correctly initialize: " + e.getMessage());
+			LOGGER.info("Failed to correctly initialize: " + e.getMessage());
 		}
-	}
-
-	private void initFuelRegistry(MinecraftServer server) {
-		// stores the fuelRegistry reference
-		RegistryWrapper.WrapperLookup registries = server.getRegistryManager();
-		FeatureSet featureSet = server.getSaveProperties().getEnabledFeatures();
-
-		FUEL_REGISTRY = FuelRegistry.createDefault(registries, featureSet);
-		LOGGER.info("FuelRegistry initialized");
-	}
-
-	public static FuelRegistry getFuelRegistry(){
-		return FUEL_REGISTRY;
 	}
 }

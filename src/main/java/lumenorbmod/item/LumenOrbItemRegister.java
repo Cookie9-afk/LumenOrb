@@ -14,12 +14,14 @@ import net.minecraft.util.collection.DefaultedList;
 
 import java.util.function.Function;
 
-public class LumenOrbItemRegister {
+public final class LumenOrbItemRegister {
     public static Item LUMEN_ORB = register("lumen_orb",
             LumenOrbItem::new,
             new Item.Settings()
                     .maxDamage(288)
                     .component(LumenOrbComponents.INVENTORY, DefaultedList.ofSize(9))
+                    .component(LumenOrbComponents.TORCH_CHARGES, 0)
+                    .enchantable(15)
     );
 
     private LumenOrbItemRegister(){}
@@ -37,4 +39,3 @@ public class LumenOrbItemRegister {
         TorchPlacerQueue.startQueue();
     }
 }
-

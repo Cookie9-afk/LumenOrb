@@ -1,5 +1,7 @@
 package lumenorbmod.item;
 
+import net.fabricmc.fabric.api.item.v1.EnchantingContext;
+import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,22 +14,28 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-import static lumenorbmod.item.LumenOrbBehavior.*;
+import static lumenorbmod.utils.LumenOrbBehavior.*;
 import static lumenorbmod.utils.TorchPlacerQueue.hasDurability;
 
 public class LumenOrbItem extends Item {
+
     public LumenOrbItem(Settings settings) {
         super(settings);
     }
 
-    // Normal use, places the torches
-    // Sneaking plus use, opens the orb's inventory
+    // Normal use -> places the torches
+    // Sneaking plus use -> opens the orb's inventory
     @Override
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack orb = user.getStackInHand(hand);
 
         // When opening the inventory the use methods stops early
         if(user.isSneaking()) return openInventory(world, user);
+
+        if(user.getItemCooldownManager().isCoolingDown(user.getStackInHand(hand))) return ActionResult.PASS;
+
+        // Add cooldown for the item
+        user.getItemCooldownManager().set(user.getStackInHand(hand), getCooldown());
 
         // if the item has less than 3\4 durability this will try to repair it, max is 288 durability, 1\4 * 288 = 72
         if(orb.getDamage() > 72) repair(orb);

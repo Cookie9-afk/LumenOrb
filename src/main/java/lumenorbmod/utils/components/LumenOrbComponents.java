@@ -14,8 +14,6 @@ import java.util.ArrayList;
 public class LumenOrbComponents {
     public static void initialize() {
         LumenOrb.LOGGER.info("Registering {} components", LumenOrb.MOD_ID);
-        // Technically this method can stay empty, but some developers like to notify
-        // the console, that certain parts of the mod have been successfully initialized
     }
 
     public static final Codec<DefaultedList<ItemStack>> INVENTORY_CODEC =
@@ -29,6 +27,14 @@ public class LumenOrbComponents {
             Identifier.of(LumenOrb.MOD_ID, "inventory"),
             ComponentType.<DefaultedList<ItemStack>>builder()
                     .codec(INVENTORY_CODEC)
+                    .build()
+    );
+
+    public static final ComponentType<Integer> TORCH_CHARGES = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(LumenOrb.MOD_ID, "torch_charges"),
+            ComponentType.<Integer>builder()
+                    .codec(Codec.INT)
                     .build()
     );
 }
