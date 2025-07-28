@@ -1,7 +1,5 @@
 package lumenorbmod.item;
 
-import net.fabricmc.fabric.api.item.v1.EnchantingContext;
-import net.fabricmc.fabric.api.item.v1.EnchantmentEvents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
