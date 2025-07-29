@@ -21,7 +21,6 @@ public final class LumenOrbItemRegister {
                     .maxDamage(288)
                     .component(LumenOrbComponents.INVENTORY, DefaultedList.ofSize(9))
                     .component(LumenOrbComponents.TORCH_CHARGES, 0)
-                    .enchantable(15)
     );
 
     private LumenOrbItemRegister(){}
