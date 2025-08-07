@@ -17,6 +17,8 @@ import net.minecraft.world.World;
 
 import java.util.*;
 
+import static lumenorbmod.utils.InventoryManager.decrementCharges;
+import static lumenorbmod.utils.components.LumenOrbComponents.TORCH_CHARGES;
 import static net.minecraft.block.Blocks.TORCH;
 
 public class TorchPlacerQueue {
@@ -109,7 +111,10 @@ public class TorchPlacerQueue {
                         25
                 );
 
-                itemUsed.damage(1, user);
+                // if the orb has light charges then first consumes them
+                if(itemUsed.get(TORCH_CHARGES) > 0) decrementCharges(itemUsed);
+                else itemUsed.damage(1, user);
+
                 return false; // placed one torch this tick, stop here
             }
             // else: skip this position and try next
