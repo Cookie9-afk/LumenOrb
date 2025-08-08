@@ -3,13 +3,13 @@
 	"id": "lumenorb",
 	"version": "${version}",
 	"name": "LumenOrb",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Adds an item that lights your way.",
 	"authors": [
-		"Me!"
+		"Cookie9"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/project/lumenorb",
+		"sources": "https://github.com/Cookie9-afk/LumenOrb"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/lumenorb/icon.png",

@@ -1,0 +1,7 @@
+{
+  "match": {
+    "items": "lumenorb:lumen_orb"
+  },
+  "luminance": 15,
+  "water_sensitive": false
+}
