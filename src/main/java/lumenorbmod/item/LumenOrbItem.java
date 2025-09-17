@@ -37,14 +37,14 @@ public class LumenOrbItem extends Item{
     public ActionResult use(World world, PlayerEntity user, Hand hand) {
         ItemStack orb = user.getStackInHand(hand);
 
-        // When opening the inventory the use methods, stops early
+        // When opening the inventory, stops early
         if (user.isSneaking()) return openInventory(world, user, orb);
 
-        // allows the item inventory to be open while it's in cooldown
-        if (user.getItemCooldownManager().isCoolingDown(user.getStackInHand(hand))) return ActionResult.PASS;
+        // stops any actions if the item is in cool down, expect opening inventory
+        if (user.getItemCooldownManager().isCoolingDown(orb)) return ActionResult.PASS;
 
-        // Starts cooldown for the item
-        user.getItemCooldownManager().set(user.getStackInHand(hand), getCooldown());
+        // starts cooldown for the item
+        user.getItemCooldownManager().set(orb, getCooldown());
 
         // if the item has less than 3\4 durability this will try to repair it, max is 288 durability, 1\4 * 288 = 72
         if (orb.getDamage() > 72) repair(orb);

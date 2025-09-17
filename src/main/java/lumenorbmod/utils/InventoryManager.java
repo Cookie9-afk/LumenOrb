@@ -13,6 +13,7 @@ public final class InventoryManager extends SimpleInventory {
 
     @Override
     public void onOpen(PlayerEntity player){
+        // todo not .getMainHandStack() but .getStackInHand()
         ItemStack orb = player.getMainHandStack();
 
         loadInventory(orb);
