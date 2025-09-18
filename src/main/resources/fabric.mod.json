@@ -26,11 +26,6 @@
 		]
 	},
 	"mixins": [
-		"lumenorb.mixins.json",
-		{
-			"config": "lumenorb.client.mixins.json",
-			"environment": "client"
-		}
 	],
 	"depends": {
 		"fabricloader": ">=0.16.14",
