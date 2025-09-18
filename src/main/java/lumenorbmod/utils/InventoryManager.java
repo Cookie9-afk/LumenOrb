@@ -1,7 +1,5 @@
 package lumenorbmod.utils;
 
-import lumenorbmod.LumenOrb;
-import lumenorbmod.item.LumenOrbItem;
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.components.LumenOrbComponents;
 import net.minecraft.entity.player.PlayerEntity;
