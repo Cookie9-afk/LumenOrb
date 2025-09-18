@@ -12,7 +12,7 @@
             "minecraft:coal_block"
         ],
         "T": [
-            "minecraft:torch"
+            "minecraft:candle"
         ]
     },
     "result": {
