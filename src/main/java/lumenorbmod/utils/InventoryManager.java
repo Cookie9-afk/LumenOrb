@@ -1,5 +1,8 @@
 package lumenorbmod.utils;
 
+import lumenorbmod.LumenOrb;
+import lumenorbmod.item.LumenOrbItem;
+import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.components.LumenOrbComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
@@ -13,8 +16,8 @@ public final class InventoryManager extends SimpleInventory {
 
     @Override
     public void onOpen(PlayerEntity player){
-        // todo not .getMainHandStack() but .getStackInHand()
         ItemStack orb = player.getMainHandStack();
+        if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
         loadInventory(orb);
     }
@@ -30,6 +33,8 @@ public final class InventoryManager extends SimpleInventory {
     @Override
     public void onClose(PlayerEntity player){
         ItemStack orb = player.getMainHandStack();
+
+        if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
         saveInventory(orb);
     }
