@@ -12,7 +12,7 @@ public final class MyFuelRegistry {
     private MyFuelRegistry(){}
 
     public static void initialize(MinecraftServer server) {
-        LOGGER.info("initializing fuelRegistry...");
+        LOGGER.info("initializing custom FuelRegistry...");
         // stores the fuelRegistry reference
 
         RegistryWrapper.WrapperLookup registries = server.getRegistryManager();

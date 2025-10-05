@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 import static lumenorbmod.utils.TorchPlacerQueue.validate;
 
-public final class  LumenOrbBehavior {
+public final class LumenOrbBehavior {
     private static final int COOLDOWN = 10;
 
     private LumenOrbBehavior(){}
@@ -45,21 +45,29 @@ public final class  LumenOrbBehavior {
     public static void repair(ItemStack orb) {
         // I'm sure I can call it at least once because we entered the method with the same condition we'll repeat
         do{
-            // the fuel inventory
-            DefaultedList<ItemStack> items = orb.get(LumenOrbComponents.INVENTORY);
+            DefaultedList<ItemStack> orbInventory = orb.get(LumenOrbComponents.INVENTORY);
 
             // no fuel in the inventory? exit early
-            if (items.size() == 0) break;
+            if (orbInventory.size() == 0) break;
 
             // if we arrived here this means there's fuel in the inventory then we get the first ItemStack
-            ItemStack fuel = items.getFirst();
+            ItemStack itemToBurn = orbInventory.getFirst();
 
-            // rounding so items with 200+ burn time can be used for fuel, planks for example
-            int repairAmount = Math.round(MyFuelRegistry.getFuelRegistry().getFuelTicks(fuel) / 400F);
+            // I first check the amount of burn ticks the item has
+            int fuelTicks = MyFuelRegistry.getFuelRegistry().getFuelTicks(itemToBurn);
 
-            // once we get the amount we have to repair I repair and decrement the ItemStack for the fuel
-            addDurability(orb, repairAmount);
-            items.getFirst().decrement(1);
+            // Since items rarely have exactly 400 fuel ticks, decrementing won't be perfect
+            // I chose to make the item very useful despite some resource waste
+            if (fuelTicks % 400 > 0) {
+
+                int QuantityToBurn = (400 / fuelTicks) + 1;
+
+                if (QuantityToBurn < itemToBurn.getCount()) addDurability(orb, 1);
+                itemToBurn.decrement(QuantityToBurn);
+            } else {
+                addDurability(orb, fuelTicks / 400);
+                itemToBurn.decrement(1);
+            }
 
             // Since decrementing the ItemStack can reduce the item to 0 amount then you would get air in the slot
             // instead I first clean the inventory then pass it back
@@ -67,7 +75,7 @@ public final class  LumenOrbBehavior {
             // After the job is done I update the orb inventory without the consumed item
             DefaultedList<ItemStack> sanitizedList = DefaultedList.copyOf(
                     ItemStack.EMPTY,
-                    items.stream()
+                    orbInventory.stream()
                             .filter(stack -> !stack.isEmpty())
                             .toArray(ItemStack[]::new)
             );
