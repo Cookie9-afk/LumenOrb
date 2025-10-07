@@ -1,6 +1,7 @@
 package lumenorbmod.screenhandler;
 
 import lumenorbmod.LumenOrb;
+import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.InventoryManager;
 import lumenorbmod.utils.MyFuelRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 
 public class LumenOrbScreenHandler extends ScreenHandler {
     private final Inventory inventory;
@@ -30,9 +32,6 @@ public class LumenOrbScreenHandler extends ScreenHandler {
 
         // I do some stuff when opening the inventory
         inventory.onOpen(playerInventory.player);
-
-        // I do this to lock the player from moving the orb or that would cause a wrong managing of the orb's inventory
-        int selectedHotbarSlot = playerInventory.selectedSlot; // player's current main hand slot
 
         // 3x3 Grid
         int m;
@@ -57,29 +56,24 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         // The player inventory
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 9; ++l) {
-                this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 84 + m * 18));
+                this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 84 + m * 18){
+                    @Override
+                    public boolean canInsert(ItemStack stack) {
+                        return !stack.isOf(LumenOrbItemRegister.LUMEN_ORB);
+                    }
+                });
+
             }
         }
         // The player Hotbar
         for (m = 0; m < 9; ++m) {
-
-            // this makes the player unable to modify the ItemStack where the orb is located
-            if (m != selectedHotbarSlot) this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142));
-            else {
-                this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142) {
-                    @Override
-                    public boolean canInsert(ItemStack stack) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean canTakeItems(PlayerEntity playerEntity) {
-                        return false;
-                    }
-                });
-            }
+            this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142) {
+                @Override
+                public boolean canInsert(ItemStack stack) {
+                    return !stack.isOf(LumenOrbItemRegister.LUMEN_ORB);
+                }
+            });
         }
-
     }
 
     @Override
@@ -121,5 +115,15 @@ public class LumenOrbScreenHandler extends ScreenHandler {
             manager.onClose(player);
         }
 
+    }
+
+    // locks the orb in the inventory
+    @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        if(slotIndex == -1 || slotIndex == -999) super.onSlotClick(slotIndex, button, actionType, player);
+        else{
+            ItemStack clickedSlot = getSlot(slotIndex).getStack().copy();
+            if(!clickedSlot.isOf(LumenOrbItemRegister.LUMEN_ORB)) super.onSlotClick(slotIndex, button, actionType, player);
+        }
     }
 }
