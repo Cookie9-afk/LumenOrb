@@ -57,10 +57,6 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 9; ++l) {
                 this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 84 + m * 18){
-                    @Override
-                    public boolean canInsert(ItemStack stack) {
-                        return !stack.isOf(LumenOrbItemRegister.LUMEN_ORB);
-                    }
                 });
 
             }
@@ -68,10 +64,6 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         // The player Hotbar
         for (m = 0; m < 9; ++m) {
             this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142) {
-                @Override
-                public boolean canInsert(ItemStack stack) {
-                    return !stack.isOf(LumenOrbItemRegister.LUMEN_ORB);
-                }
             });
         }
     }
@@ -120,10 +112,32 @@ public class LumenOrbScreenHandler extends ScreenHandler {
     // locks the orb in the inventory
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
+        System.out.println(slotIndex + " " + button + " " + actionType);
+        // -1 and -999 handles clicks outside slots
         if(slotIndex == -1 || slotIndex == -999) super.onSlotClick(slotIndex, button, actionType, player);
         else{
-            ItemStack clickedSlot = getSlot(slotIndex).getStack().copy();
-            if(!clickedSlot.isOf(LumenOrbItemRegister.LUMEN_ORB)) super.onSlotClick(slotIndex, button, actionType, player);
+            // item stack at selected slot, ends early if clicked an empty slot
+            ItemStack clickedStack = getSlot(slotIndex).getStack();
+            if(clickedStack.isEmpty()) return;
+
+            // item stack at button slot
+            ItemStack buttonStack = (button == 40) ? player.getOffHandStack() : player.getInventory().main.get(button);
+            // the item stack currently being held
+            ItemStack heldStack = player.getInventory().getMainHandStack();
+
+            boolean isSwapping = actionType == SlotActionType.SWAP;
+            boolean isHeldOrb = heldStack == clickedStack;
+
+            if(!isSwapping && !isHeldOrb) {
+                super.onSlotClick(slotIndex, button, actionType, player);
+            }
+            if(isSwapping && !isOrb(buttonStack)){
+                super.onSlotClick(slotIndex, button, actionType, player);
+            }
         }
+    }
+
+    private boolean isOrb(ItemStack item){
+        return item.isOf(LumenOrbItemRegister.LUMEN_ORB);
     }
 }
