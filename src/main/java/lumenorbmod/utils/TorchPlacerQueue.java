@@ -49,7 +49,7 @@ public class TorchPlacerQueue {
      */
     public static boolean hasDurability(ItemStack itemUsed){
         int durabilityLeft = itemUsed.getMaxDamage() - itemUsed.getDamage();
-        return durabilityLeft >= 1;
+        return durabilityLeft > 1;
     }
 
     /**
