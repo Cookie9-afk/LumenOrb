@@ -4,11 +4,13 @@ import lumenorbmod.LumenOrb;
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.InventoryManager;
 import lumenorbmod.utils.MyFuelRegistry;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -163,6 +165,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
                 // Not swapping & held item is not orb
                 if (!isHeldOrb) {
                     super.onSlotClick(slotIndex, button, actionType, player);
+                    net.minecraft.item.BundleItem.getBundles();
                 }
             }
         }

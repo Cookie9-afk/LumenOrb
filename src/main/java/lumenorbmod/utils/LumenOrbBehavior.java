@@ -94,7 +94,7 @@ public final class LumenOrbBehavior {
 
     public static ActionResult.Success openInventory(World world, PlayerEntity user, ItemStack orb){
         if (!world.isClient) {
-            // Open your screen handler for the player on the server side
+            // opens screen handler for the player from the server side
             NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
                 @Override
                 public ScreenHandler createMenu(int syncId, PlayerInventory playerInventory, PlayerEntity player) {
@@ -103,7 +103,7 @@ public final class LumenOrbBehavior {
 
                 @Override
                 public Text getDisplayName() {
-                    // This is the title of the GUI window
+                    // title of the GUI window
                     return orb.getName();
                 }
             };
