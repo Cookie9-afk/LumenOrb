@@ -42,35 +42,34 @@ public final class LumenOrbBehavior {
         return ActionResult.SUCCESS;
     }
 
+    // This method is going to check every slot of the orb and if that slot can repair the orb by at least 1 durability it will try to
     public static void repair(ItemStack orb) {
-        // I'm sure I can call it at least once because we entered the method with the same condition we'll repeat
-        do{
-            DefaultedList<ItemStack> orbInventory = orb.get(LumenOrbComponents.INVENTORY);
+        DefaultedList<ItemStack> orbInventory = orb.get(LumenOrbComponents.INVENTORY);
 
-            // no fuel in the inventory? exit early
-            if (orbInventory.size() == 0) break;
+        for(ItemStack slot : orbInventory){
+            // if that slot is empty will skip it
+            //if (slot.isEmpty()) continue;
 
-            // if we arrived here this means there's fuel in the inventory then we get the first ItemStack
-            ItemStack itemToBurn = orbInventory.getFirst();
+            // since the slot it's not empty it will check if it can consume the material to repair
+            int fuelTicks = MyFuelRegistry.getFuelRegistry().getFuelTicks(slot);
 
-            // I first check the amount of burn ticks the item has
-            int fuelTicks = MyFuelRegistry.getFuelRegistry().getFuelTicks(itemToBurn);
-
-            // Since items rarely have exactly 400 fuel ticks, decrementing won't be perfect
-            // I chose to make the item very useful despite some resource waste
-            if (fuelTicks % 400 > 0) {
-
-                int QuantityToBurn = (400 / fuelTicks) + 1;
-
-                if (QuantityToBurn < itemToBurn.getCount()) addDurability(orb, 1);
-                itemToBurn.decrement(QuantityToBurn);
-            } else {
-                addDurability(orb, fuelTicks / 400);
-                itemToBurn.decrement(1);
+            while (orb.getDamage() > 72){
+                // is burn time a multiple of 400?
+                if(fuelTicks % 400 == 0){
+                    // since 400 burn ticks equals to 1 durability
+                    slot.decrement(1);
+                    addDurability(orb, 1);
+                    if(slot.getCount() <= 0) break;
+                }else{
+                    // if it's not
+                    int itemsNeededForRepair = (int) Math.ceil(400f / fuelTicks);
+                    if(slot.getCount() >= itemsNeededForRepair){
+                        slot.decrement(itemsNeededForRepair);
+                        addDurability(orb, itemsNeededForRepair - 1);
+                    }
+                    if(slot.getCount() < itemsNeededForRepair) break;
+                }
             }
-
-            // Since decrementing the ItemStack can reduce the item to 0 amount then you would get air in the slot
-            // instead I first clean the inventory then pass it back
 
             // After the job is done I update the orb inventory without the consumed item
             DefaultedList<ItemStack> sanitizedList = DefaultedList.copyOf(
@@ -81,7 +80,8 @@ public final class LumenOrbBehavior {
             );
 
             orb.set(LumenOrbComponents.INVENTORY, sanitizedList);
-        } while(orb.getDamage() > 72);
+
+        }
     }
 
     // custom method to manage durability, avoiding exceeding max durability or reducing to less, 0-288 durability range
@@ -139,4 +139,4 @@ public final class LumenOrbBehavior {
         return ActionResult.PASS;
     }
 
-}
+    }
