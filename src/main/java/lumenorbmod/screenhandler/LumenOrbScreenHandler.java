@@ -4,15 +4,13 @@ import lumenorbmod.LumenOrb;
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.InventoryManager;
 import lumenorbmod.utils.MyFuelRegistry;
-import net.minecraft.entity.ItemEntity;
+import lumenorbmod.utils.components.LumenOrbComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.screen.slot.SlotActionType;
 
 public class LumenOrbScreenHandler extends ScreenHandler {
     private final Inventory inventory;
@@ -63,6 +61,12 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         for (m = 0; m < 3; ++m) {
             for (l = 0; l < 9; ++l) {
                 this.addSlot(new Slot(playerInventory, l + m * 9 + 9, 8 + l * 18, 84 + m * 18) {
+                    @Override
+                    public boolean canTakeItems(PlayerEntity PlayerEntity) {
+                        ItemStack stack = this.getStack();
+                        boolean locked = stack.getOrDefault(LumenOrbComponents.IS_LOCKED,false);
+                        return !locked;
+                    }
                 });
 
             }
@@ -72,6 +76,12 @@ public class LumenOrbScreenHandler extends ScreenHandler {
 
         {
             this.addSlot(new Slot(playerInventory, m, 8 + m * 18, 142) {
+                @Override
+                public boolean canTakeItems(PlayerEntity PlayerEntity) {
+                    ItemStack stack = this.getStack();
+                    boolean locked = stack.getOrDefault(LumenOrbComponents.IS_LOCKED,false);
+                    return !locked;
+                }
             });
         }
     }
@@ -116,7 +126,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         }
 
     }
-
+/*
     // locks the orb in the inventory
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
@@ -170,7 +180,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
             }
         }
     }
-
+*/
     private boolean isOrb(ItemStack item) {
         return item.isOf(LumenOrbItemRegister.LUMEN_ORB);
     }

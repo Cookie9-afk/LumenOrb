@@ -17,6 +17,7 @@ public final class InventoryManager extends SimpleInventory {
         ItemStack orb = player.getMainHandStack();
         if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
+        orb.set(LumenOrbComponents.IS_LOCKED, true);
         loadInventory(orb);
     }
 
@@ -35,6 +36,7 @@ public final class InventoryManager extends SimpleInventory {
         if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
         saveInventory(orb);
+        orb.set(LumenOrbComponents.IS_LOCKED, false);
     }
 
     private void saveInventory(ItemStack orb) {

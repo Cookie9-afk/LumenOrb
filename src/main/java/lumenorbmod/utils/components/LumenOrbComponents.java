@@ -37,4 +37,12 @@ public class LumenOrbComponents {
                     .codec(Codec.INT)
                     .build()
     );
+
+    public static final ComponentType<Boolean> IS_LOCKED = Registry.register(
+            Registries.DATA_COMPONENT_TYPE,
+            Identifier.of(LumenOrb.MOD_ID, "is_locked"),
+            ComponentType.<Boolean>builder()
+                    .codec(Codec.BOOL)
+                    .build()
+    );
 }
