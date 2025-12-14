@@ -61,16 +61,4 @@ public class LumenOrbItem extends Item{
         // start of server managed stuff
         return useSuccess(world, user, orb);
     }
-
-    @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
-        tooltip.add(Text.translatable("itemTooltip.lumenorbmod.lumen_orb").formatted(Formatting.GOLD));
-
-        int charges = stack.get(LumenOrbComponents.TORCH_CHARGES);
-        if(charges > 0){
-            tooltip.add(
-                    Text.of("Extra charges: " + charges)
-            );
-        }
-    }
 }

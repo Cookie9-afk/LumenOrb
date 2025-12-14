@@ -1,4 +1,5 @@
 {
   "item.lumenorb.lumen_orb": "Lumen Orb",
-  "itemTooltip.lumenorbmod.lumen_orb": "Because fumbling in the dark isn’t fun."
+  "itemTooltip.lumenorbmod.lumen_orb": "Because fumbling in the dark isn’t fun.",
+  "itemTooltip.lumenorbmod.charges" : "Extra charges: %s"
 }
