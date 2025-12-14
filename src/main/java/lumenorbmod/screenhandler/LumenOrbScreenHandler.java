@@ -126,61 +126,7 @@ public class LumenOrbScreenHandler extends ScreenHandler {
         }
 
     }
-/*
-    // locks the orb in the inventory
-    @Override
-    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
-        System.out.println(slotIndex + " " + button + " " + actionType);
 
-        // -1 and -999 handles clicks outside slots
-        if (slotIndex == -1 || slotIndex == -999)
-            super.onSlotClick(slotIndex, button, actionType, player);
-        else {
-            // item stack at selected slot, ends early if clicked an empty slot
-            ItemStack clickedStack = getSlot(slotIndex).getStack();
-
-            // button pressed, 40 is offhand, default 'F' keybind, 1 for left click, 2 for
-            // right click
-            ItemStack buttonStack = (button == 40) ? player.getOffHandStack() : player.getInventory().main.get(button);
-
-            // the item stack held in hand
-            ItemStack heldStack = player.getInventory().getMainHandStack();
-
-            boolean isSwapping = actionType == SlotActionType.SWAP;
-
-            // is the held stack the same as the clicked stack
-            boolean isHeldOrb = heldStack == clickedStack;
-
-            // Prevent swapping the held orb
-            if (isSwapping) {
-
-                // Case 1: Empty clicked slot & buttonStack is not the held orb
-                if (clickedStack.isEmpty() && buttonStack != heldStack) {
-                    super.onSlotClick(slotIndex, button, actionType, player);
-                    return;
-                }
-
-                // Case 2: Trying to swap the orb itself
-                if (isOrb(clickedStack) && isHeldOrb) {
-                    System.out.println("Cannot swap Lumen Orb!");
-                    return;
-                }
-
-                // Case 3: Normal item swap (not the orb)
-                if (!isOrb(buttonStack)) {
-                    super.onSlotClick(slotIndex, button, actionType, player);
-                }
-
-            } else {
-                // Not swapping & held item is not orb
-                if (!isHeldOrb) {
-                    super.onSlotClick(slotIndex, button, actionType, player);
-                    net.minecraft.item.BundleItem.getBundles();
-                }
-            }
-        }
-    }
-*/
     private boolean isOrb(ItemStack item) {
         return item.isOf(LumenOrbItemRegister.LUMEN_ORB);
     }
