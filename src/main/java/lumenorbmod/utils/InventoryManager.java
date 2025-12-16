@@ -2,6 +2,7 @@ package lumenorbmod.utils;
 
 import lumenorbmod.item.LumenOrbItemRegister;
 import lumenorbmod.utils.components.LumenOrbComponents;
+import net.minecraft.entity.ContainerUser;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -13,12 +14,14 @@ public final class InventoryManager extends SimpleInventory {
     }
 
     @Override
-    public void onOpen(PlayerEntity player){
-        ItemStack orb = player.getMainHandStack();
-        if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
+    public void onOpen(ContainerUser user){
+        if(user instanceof PlayerEntity player){
+            ItemStack orb = player.getMainHandStack();
+            if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
-        orb.set(LumenOrbComponents.IS_LOCKED, true);
-        loadInventory(orb);
+            orb.set(LumenOrbComponents.IS_LOCKED, true);
+            loadInventory(orb);
+        }
     }
 
     private void loadInventory(ItemStack orb) {
@@ -30,13 +33,15 @@ public final class InventoryManager extends SimpleInventory {
     }
 
     @Override
-    public void onClose(PlayerEntity player){
-        ItemStack orb = player.getMainHandStack();
+    public void onClose(ContainerUser user){
+        if(user instanceof PlayerEntity player){
+            ItemStack orb = player.getMainHandStack();
 
-        if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
+            if(orb.getItem() != LumenOrbItemRegister.LUMEN_ORB) orb = player.getOffHandStack();
 
-        saveInventory(orb);
-        orb.set(LumenOrbComponents.IS_LOCKED, false);
+            saveInventory(orb);
+            orb.set(LumenOrbComponents.IS_LOCKED, false);
+        }
     }
 
     private void saveInventory(ItemStack orb) {

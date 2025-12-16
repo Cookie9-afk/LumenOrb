@@ -15,7 +15,7 @@ public final class EventRegistry {
     public static void register() {
         AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
             // check if holding the orb from the server
-            if (!world.isClient) {
+            if (!world.isClient()) {
                 if (player.getOffHandStack().getItem() instanceof LumenOrbItem) {
                     return pickupTorch(player, world, Hand.OFF_HAND, pos);
                 } else if (player.getStackInHand(hand).getItem() instanceof LumenOrbItem) {

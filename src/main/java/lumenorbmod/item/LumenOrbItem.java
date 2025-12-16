@@ -1,21 +1,15 @@
 package lumenorbmod.item;
 
-import lumenorbmod.utils.components.LumenOrbComponents;
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 import static lumenorbmod.utils.LumenOrbBehavior.*;
 import static lumenorbmod.utils.TorchPlacerQueue.hasDurability;
@@ -56,7 +50,7 @@ public class LumenOrbItem extends Item{
             here I close for the client early because I want to do other stuff from server only
             like managing the torch placing order, particle spawn etc
          */
-        else if (world.isClient) return ActionResult.SUCCESS;
+        else if (world.isClient()) return ActionResult.SUCCESS;
 
         // start of server managed stuff
         return useSuccess(world, user, orb);

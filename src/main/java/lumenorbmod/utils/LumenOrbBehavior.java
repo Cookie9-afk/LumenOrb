@@ -93,7 +93,7 @@ public final class LumenOrbBehavior {
     }
 
     public static ActionResult.Success openInventory(World world, PlayerEntity user, ItemStack orb){
-        if (!world.isClient) {
+        if (!world.isClient()) {
             // opens screen handler for the player from the server side
             NamedScreenHandlerFactory screenHandlerFactory = new NamedScreenHandlerFactory() {
                 @Override
